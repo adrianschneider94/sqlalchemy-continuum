@@ -81,7 +81,6 @@ class RelationshipBuilder(object):
             return query
         if self.property.uselist is False:
             return query.first()
-        print(query)
         return query.all()
 
     def criteria(self, obj):
