@@ -58,7 +58,7 @@ class RelationshipBuilder(object):
                     getattr(obj, tx_column),
                     reflector(self.property.primaryjoin)
                 )
-            )
+            ).correlate(None)
         )
 
     def query(self, obj):
