@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 from .exc import ClassNotVersioned
 from .expression_reflector import VersionExpressionReflector
@@ -80,6 +81,7 @@ class RelationshipBuilder(object):
             return query
         if self.property.uselist is False:
             return query.first()
+        print(query)
         return query.all()
 
     def criteria(self, obj):
@@ -210,7 +212,11 @@ class RelationshipBuilder(object):
 
         """
         reflector = VersionExpressionReflector(obj, self.property)
+        pk = inspect(obj)
+        cls = inspect(self.local_cls)
+        conditions = list(zip(cls.primary_key, pk.identity))
         return sa.and_(
+            *(x == y for x,y in conditions),
             reflector(self.property.primaryjoin),
             self.one_to_many_subquery(obj),
             self.remote_cls.operation_type != Operation.DELETE
